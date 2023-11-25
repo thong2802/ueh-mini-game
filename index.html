@@ -22,13 +22,16 @@
             width: 100%;
             height: 100%;
             z-index: -1;
+            overflow: hidden;
+            /* Hide overflowing content */
         }
 
         #background-image {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            opacity: 0.8;
+            object-fit: contain;
+            /* Change object-fit to contain */
+            opacity: 0.9;
             transition: opacity 1s ease;
         }
 
@@ -41,14 +44,24 @@
         }
 
         #start-button {
-            font-size: 24px;
+            font-size: 25px;
             padding: 10px 20px;
             cursor: pointer;
             background-color: #3498db;
             color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease, font-size 0.2s ease;
         }
+
+        #start-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+            font-size: 25px;
+            /* Kích thước chữ khi di chuột qua */
+        }
+
+
 
         #lucky-numbers {
             display: none;
@@ -84,18 +97,16 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: conic-gradient(
-                #3498db 0% 10%,
-                #e74c3c 10% 20%,
-                #f39c12 20% 30%,
-                #2ecc71 30% 40%,
-                #9b59b6 40% 50%,
-                #e74c3c 50% 60%,
-                #f39c12 60% 70%,
-                #2ecc71 70% 80%,
-                #3498db 80% 90%,
-                #9b59b6 90% 100%
-            );
+            background: conic-gradient(#3498db 0% 10%,
+                    #e74c3c 10% 20%,
+                    #f39c12 20% 30%,
+                    #2ecc71 30% 40%,
+                    #9b59b6 40% 50%,
+                    #e74c3c 50% 60%,
+                    #f39c12 60% 70%,
+                    #2ecc71 70% 80%,
+                    #3498db 80% 90%,
+                    #9b59b6 90% 100%);
             transition: transform 3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
             position: relative;
             overflow: hidden;
@@ -166,6 +177,14 @@
             margin-top: 20px;
         }
 
+        #close-congratulations-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+            font-size: 25px;
+            /* Kích thước chữ khi di chuột qua */
+        }
+
+
         /* New styles for the welcome text */
         #welcome-text-container {
             position: fixed;
@@ -213,7 +232,7 @@
     <!-- Your existing HTML content -->
 
     <div id="background-container">
-        <img id="background-image" src="assets/image.png" alt="Background">
+        <img id="background-image" src="assets/lucky number (2).png" alt="Background">
     </div>
 
     <div id="game-container">
@@ -237,6 +256,9 @@
         </div>
     </div>
 
+    <!-- Add the audio element for the start sound -->
+    <audio id="startSound" src="assets/music.mp3"></audio>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -244,6 +266,7 @@
             const luckyNumbers = document.getElementById('lucky-numbers');
             const closeButton = document.getElementById('close-button');
             const wheel = document.getElementById('wheel');
+            const startSound = document.getElementById('startSound'); // Add this line for the audio element
 
             // Number containers
             const numberContainers = document.querySelectorAll('.number-container');
@@ -266,6 +289,9 @@
             congratulationsPopup.style.display = 'none';
 
             startButton.addEventListener('click', () => {
+                // Play the start sound
+                startSound.play();
+
                 luckyNumbers.style.display = 'flex';
 
                 // Random angle for spinning
@@ -277,6 +303,10 @@
                     duration: 10, // Adjust the duration to 10 seconds
                     ease: 'power3.inOut', // Easing function for a more dynamic spin
                     onComplete: () => {
+                        // Stop the start sound when the spinning is complete
+                        startSound.pause();
+                        startSound.currentTime = 0;
+
                         // Show congratulations popup after 1 second
                         setTimeout(() => {
                             showCongratulationsPopup();
@@ -310,7 +340,7 @@
             });
 
             function showCongratulationsPopup() {
-                const randomCongratulationsNumber = Math.floor(Math.random() * 1500) + 1;
+                const randomCongratulationsNumber = Math.floor(Math.random() * 1000) + 1;
                 congratulationsNumber.textContent = `Lucky number: ${randomCongratulationsNumber}`;
                 congratulationsPopup.style.display = 'flex';
             }
